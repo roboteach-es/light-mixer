@@ -70,12 +70,10 @@ void drawQRcode(uint8_t R, uint8_t G, uint8_t B) {
   sprintf(&url[36], "%02x", R);
   sprintf(&url[38], "%02x", G);
   sprintf(&url[40], "%02x", B);
-  Serial.println(url);
   // Create the QR code
   QRCode qrcode;
   uint8_t qrcodeData[qrcode_getBufferSize(3)];
   qrcode_initText(&qrcode, qrcodeData, 3, 0, url);
-  Serial.println(qrcode.size);
   uint8_t offset = ((64-qrcode.size*2)/2)-1;
   // draw it
   uint8_t buffer[64*64/8]; // 64x64 pixels
@@ -118,7 +116,6 @@ void setup() {
 void loop() {
   // check showingQR deadend
   int click = !digitalRead(9);
-  //if (click) Serial.println("click");
   if (click && !showingQR) {
     // show QR
     ssd1306_clearScreen();
