@@ -1,5 +1,5 @@
 # light-mixer
-A not so simple gadget to experiment with RGB light color mixing.
+A not so simple gadget to experiment with RGB light color mixing. Obtain your own **Personal Color Badge** through the generated QR-Code.
 
 ## With ENCODERS
 
@@ -23,6 +23,14 @@ This was the first iteration, a simpler one: it uses an Arduino Nano, a Neopixel
 The code is in the `src` folder. The firmware was created -for simplicity- with **mBlock-3** ([Windows](https://dl.makeblock.com/mblock3/mBlock_win_V3.4.12.exe) and [Macos](https://dl.makeblock.com/mblock3/mBlock_mac_V3.4.12.zip) downloads), using the [NeoPixel by Robokacija 1.0 extension](https://www.mblock.cc/extensions/uploads/3478f9455438fe7979553f09d80008df12dddc49.zip), but the Arduino code generated is also available.
 
 ![firmware](src/potentiometers/firmware.png)
+
+## QR-Code
+
+Yes, another gadget that produces QR-Codes: if you press (and mantain) the blue knob, you'll get a QR-Code on the screen that takes you to the badge generator webapp, a PHP app that is also part of this project (open-source and included in the `src\lm-badge` folder), that produces a **Personal Color Badge** with your own color and its numerical components, both in RGB and CMY formats.
+
+![Badge](images/badge.png)
+
+Example of a badge at: https://www.roboteach.es/lm-badge/?c=a000d0&n=Almu
 
 
 ## LICENCIA / LICENSE

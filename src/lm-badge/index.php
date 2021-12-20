@@ -275,6 +275,7 @@ SVG;
 			<form>
 				<label><b>Nome</b>:</label>
 				<input type="text" name="n" value="<?php if ( isset($_GET['n']) ) echo $_GET['n']; ?>">
+				<?php if ( isset($_GET['c']) ) echo '<input type="hidden" name="c" value="'.$_GET['c'].'">'; ?>
 				<input type="submit" value="Actualizar">
 			</form>
 		</div>
