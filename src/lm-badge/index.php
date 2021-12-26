@@ -1,6 +1,7 @@
 <?php
 	// https://www.roboteach.es/lm-badge?c=rrggbb
 	// https://lvngd.com/blog/how-embed-google-font-svg/
+	// https://mybyways.com/blog/convert-svg-to-png-using-your-browser
 
 	// COLOR
 	if ( isset($_GET['c']) ) {
@@ -243,7 +244,7 @@ SVG;
 	// serve SVG if downloading
 	if ( isset($_GET['d']) ) {
 		header('Content-type: image/svg+xml');
-		header('Content-Disposition: attachment; filename=badge_"'.$badgename.'.svg"');
+		header('Content-Disposition: attachment; filename="badge_'.$badgename.'.svg"');
 		echo($svg);
 		exit(0);
 	}
@@ -267,16 +268,32 @@ SVG;
 			font-family: 'PT Sans', sans-serif;
 			background-color: #999187;
 		}
+		input[type=submit] {
+			-webkit-appearance: none;
+		}
 		#badge, #form, #info {
 			text-align: center;
+		}
+		#form {
+			width: 340px;
+			margin: 0 auto;
 		}
 		#info {
 			padding-top: 25px;
 		}
-		#dbutton {
-			margin-top: 10px;
-			padding: 5px 0;
-			width: 306px;
+		#ubutton {
+			border: 1px solid #a0a0a0;
+			border-radius: 3px;
+			background-color: #f0f0f0;
+			padding: 2px 4px;
+		}
+		#svgbutton, #pngbutton {
+			width: 48%;
+			border: 1px solid #e99a14;
+			border-radius: 4px;
+			background-color: #f9aa24;
+			padding: 4px 10px;
+			margin: 6px 2px 2px 0;
 		}
 	</style> 
 </head>
@@ -291,8 +308,9 @@ SVG;
 				<label><b>Nome</b>:</label>
 				<input type="text" name="n" value="<?php echo $badgename; ?>">
 				<input type="hidden" name="c" value="<?php echo $badgecolor; ?>">
-				<input type="submit" value="Actualizar"><br/>
-				<input type="submit" name="d" value="Descargar" id="dbutton">
+				<input type="submit" value="Actualizar" id="ubutton"><br/>
+				<input type="submit" name="d" value="Descargar SVG" id="svgbutton">
+				<input type="button" name="d" value="Descargar PNG" id="pngbutton">
 			</form>
 		</div>
 		<div id="info">
@@ -302,5 +320,38 @@ SVG;
 			&copy; <a href="https://www.roboteach.es"><span style="color: white;">ROBO</span><span style="color: #f9aa24;">teach</span></a> 2021
 		</div>
 	</div>
+	<!-- PNG export -->
+	<canvas id="c" style="display: none;"></canvas>
+	<script type="text/javascript">
+		document.getElementById('pngbutton').addEventListener('click', function () {
+			var svg = document.getElementById('badge').querySelector('svg').cloneNode(true);
+			var cr = document.getElementById('badge').querySelector('svg').getBoundingClientRect()
+			svg.setAttribute('width', cr.width * 2);
+			svg.setAttribute('height', cr.height * 2);
+			var canvas = document.getElementById('c');
+			canvas.width = cr.width * 2;
+			canvas.height = cr.height * 2;
+			var data = new XMLSerializer().serializeToString(svg);
+			var win = window.URL || window.webkitURL || window;
+			var img = new Image();
+			var blob = new Blob([data], { type: 'image/svg+xml' });
+			var url = win.createObjectURL(blob);
+			img.onload = function () {
+				canvas.getContext('2d').drawImage(img, 0, 0);
+				win.revokeObjectURL(url);
+				var uri = canvas.toDataURL('image/png').replace('image/png', 'octet/stream');
+				var a = document.createElement('a');
+				document.body.appendChild(a);
+				a.style = 'display: none';
+				a.href = uri
+				a.download = "badge_" + document.getElementsByName("n")[0].value + ".png";
+				a.click();
+				window.URL.revokeObjectURL(uri);
+				document.body.removeChild(a);
+			};
+			img.src = url;
+		});
+	</script>
+	<!-- END of PNG export -->
 </body>
 </html>
