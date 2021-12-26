@@ -321,7 +321,8 @@ SVG;
 		</div>
 	</div>
 	<!-- PNG export -->
-	<canvas id="c" style="display: none;"></canvas>
+	<!-- off-screen rendering because of Safari, that won't render the fonts otherwise -->
+	<canvas id="c" style="position: absolute; top: 0px; left: -2000px;"></canvas>
 	<script type="text/javascript">
 		document.getElementById('pngbutton').addEventListener('click', function () {
 			var svg = document.getElementById('badge').querySelector('svg').cloneNode(true);
