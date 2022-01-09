@@ -6,16 +6,56 @@
 #include <Adafruit_NeoPixel.h>
 #include "qrcode.h"
 
-RELEncoder encoder23 = RELEncoder(3, 2, 0, 255); // pinA, pinB, min, max
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(1, 8, NEO_GRB + NEO_KHZ800);
+bool showingQR = false;
+
+RELEncoder encoder23 = RELEncoder(3, 2, 11, 0, 255); // pinA, pinB, btn, min, max
 uint8_t savedposition23 = 0;
-RELEncoder encoder45 = RELEncoder(5, 4, 0, 255); // pinA, pinB, min, max
+RELEncoder encoder45 = RELEncoder(5, 4, 10, 0, 255); // pinA, pinB, btn, min, max
 uint8_t savedposition45 = 0;
-RELEncoder encoder67 = RELEncoder(7, 6, 0, 255); // pinA, pinB, min, max
+RELEncoder encoder67 = RELEncoder(7, 6, 9, 0, 255); // pinA, pinB, btn, min, max
 uint8_t savedposition67 = 0;
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(1, 8, NEO_GRB + NEO_KHZ800);
+void onButtonReleased(RELEncoder& encoder, unsigned long duration){
+  // first check QR display status
+  if (showingQR) {
+    // hide QR
+    ssd1306_normalMode();
+    drawFullScreen();
+    showingQR = false;
+    return;
+  }
+  // full color
+  if (&encoder == &encoder23)
+  {
+    encoder23.setPosition(255);
+    encoder45.setPosition(0);
+    encoder67.setPosition(0);
+  }
+  if (&encoder == &encoder45)
+  {
+    encoder23.setPosition(0);
+    encoder45.setPosition(255);
+    encoder67.setPosition(0);
+  }
+  if (&encoder == &encoder67)
+  {
+    encoder23.setPosition(0);
+    encoder45.setPosition(0);
+    encoder67.setPosition(255);
+  }  
+} // onButtonReleased()
 
-bool showingQR = false;
+void onButtonLongPressed(RELEncoder& encoder, unsigned long duration){
+  if (!showingQR) {
+    // show QR
+    ssd1306_clearScreen();
+    drawQRcode(savedposition23, savedposition45, savedposition67);
+    ssd1306_invertMode();
+    showingQR = true;
+    return;
+  }
+} // onButtonLongPressed()
 
 static void drawIndicator(uint8_t value, uint8_t color)
 {
@@ -95,9 +135,15 @@ void drawQRcode(uint8_t R, uint8_t G, uint8_t B) {
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("light-mixer v1.0 by ROBOteach");
+  Serial.println("light-mixer v1.1 by ROBOteach");
   strip.begin();
-  pinMode(9, INPUT_PULLUP); // click Blue encoder
+  // encoders button callbacks
+  encoder23.setButtonOnReleaseCB(onButtonReleased);
+  encoder45.setButtonOnReleaseCB(onButtonReleased);
+  encoder67.setButtonOnReleaseCB(onButtonReleased);
+  encoder23.setButtonOnLongPressCB(onButtonLongPressed);
+  encoder45.setButtonOnLongPressCB(onButtonLongPressed);
+  encoder67.setButtonOnLongPressCB(onButtonLongPressed);
   // initial flash
   setLight(0, 0, 0); // extra paranoid
   uint8_t flashes[4][3] = { {128,0,0}, {0,128,0}, {0,0,128}, {128,128,128} };
@@ -114,32 +160,18 @@ void setup() {
 }
 
 void loop() {
-  // check showingQR deadend
-  int click = !digitalRead(9);
-  if (click && !showingQR) {
-    // show QR
-    ssd1306_clearScreen();
-    drawQRcode(savedposition23, savedposition45, savedposition67);
-    ssd1306_invertMode();
-    showingQR = true;
-    delay(100);
-  }
-  if (!click && showingQR) {
-    // hide QR
-    ssd1306_normalMode();
-    drawFullScreen();
-    showingQR = false;
-    delay(100);
-  }
-  if (showingQR) return;
-  
-  // update encoder positions
+  // update controls status
   encoder23.loop();
-  int position23 = encoder23.getPosition();
   encoder45.loop();
-  int position45 = encoder45.getPosition();
   encoder67.loop();
-  int position67 = encoder67.getPosition();
+
+  if (showingQR) return;
+
+  // read values and draw color
+  // get encoder positions
+  uint8_t position23 = encoder23.getPosition();
+  uint8_t position45 = encoder45.getPosition();
+  uint8_t position67 = encoder67.getPosition();
   // redraw sliders if neccessary
   if (position23 != savedposition23) {
     drawIndicator(position23, 1);
