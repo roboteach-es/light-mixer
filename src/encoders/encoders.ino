@@ -1,4 +1,8 @@
-// RotEnLib test
+// light-mixer firmware v1.1
+// It requires two libraries:
+//
+//  * QRCode by Richard Moore (https://github.com/ricmoo/qrcode/)
+//  * ssd1306 by Alexey Dynda (https://github.com/lexus2k/ssd1306)
 
 #include "RotEnLib.h"
 #include "ssd1306.h"

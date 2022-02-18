@@ -11,7 +11,10 @@ The 3D model was created with [FreeCAD](https://freecadweb.org) and is available
 
 ![schematic](schematic/light-mixer-encoders_bb.png)
 
-The schematic is available in the `schematic` folder (in [Fritzing](https://fritzing.org) format), and the firmware/code in the `src` folder, ready to be uploaded to the Arduino Nano with the *Arduino IDE* (or your prefered method).
+The schematic is available in the `schematic` folder (in [Fritzing](https://fritzing.org) format), and the firmware/code in the `src` folder, ready to be uploaded to the Arduino Nano with the *Arduino IDE* (or your prefered method). It requires two libraries:
+
+  * QRCode by Richard Moore ([here](https://github.com/ricmoo/qrcode/))
+  * ssd1306 by Alexey Dynda ([here](https://github.com/lexus2k/ssd1306))
 
 
 ## With POTENTIOMETERS
