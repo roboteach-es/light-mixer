@@ -20,6 +20,23 @@ uint8_t savedposition45 = 0;
 RELEncoder encoder67 = RELEncoder(7, 6, 9, 0, 255); // pinA, pinB, btn, min, max
 uint8_t savedposition67 = 0;
 
+void setPresets(RELEncoder& main, RELEncoder& secondaryA, RELEncoder& secondaryB){
+  if (main.getPosition() +
+      secondaryA.getPosition() * 255 +
+      secondaryB.getPosition() * 255 * 255 == 255)
+  {
+    main.setPosition(0);
+    secondaryA.setPosition(255);
+    secondaryB.setPosition(255);
+  }
+  else
+  {
+    main.setPosition(255);
+    secondaryA.setPosition(0);
+    secondaryB.setPosition(0);
+  }
+}
+
 void onButtonReleased(RELEncoder& encoder, unsigned long duration){
   // first check QR display status
   if (showingQR) {
@@ -32,21 +49,15 @@ void onButtonReleased(RELEncoder& encoder, unsigned long duration){
   // full color
   if (&encoder == &encoder23)
   {
-    encoder23.setPosition(255);
-    encoder45.setPosition(0);
-    encoder67.setPosition(0);
+    setPresets(encoder23, encoder45, encoder67);
   }
   if (&encoder == &encoder45)
   {
-    encoder23.setPosition(0);
-    encoder45.setPosition(255);
-    encoder67.setPosition(0);
+    setPresets(encoder45, encoder23, encoder67);
   }
   if (&encoder == &encoder67)
   {
-    encoder23.setPosition(0);
-    encoder45.setPosition(0);
-    encoder67.setPosition(255);
+    setPresets(encoder67, encoder23, encoder45);
   }  
 } // onButtonReleased()
 
