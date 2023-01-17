@@ -9,7 +9,7 @@ This is the new iteration that uses three rotary encoders, an Arduino Nano, a Ne
 
 The 3D model was created with [FreeCAD](https://freecadweb.org) and is available in the `3D` folder. The STL models are also available if you just want to print them.
 
-![schematic](schematic/light-mixer-encoders_bb.png)
+![schematic](schematic/light-mixer-encoders_bb.svg)
 
 The schematic is available in the `schematic` folder (in [Fritzing](https://fritzing.org) format), and the firmware/code in the `src` folder, ready to be uploaded to the Arduino Nano with the *Arduino IDE* (or your prefered method). It requires two libraries:
 
