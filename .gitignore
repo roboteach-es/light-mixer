@@ -48,6 +48,7 @@ Temporary Items
 
 # Other stuff
 *.FCStd1
+*.FCBak
 .github
 .npmignore
 README.html
